@@ -1,7 +1,6 @@
 import argparse
 import logging
 import pandas as pd
-import hashlib
 import sys
 
 # Configure logging
@@ -47,7 +46,10 @@ def load_database(db_path=None):
         try:
             df = pd.read_csv(db_path)
             # Assuming the CSV has columns 'fingerprint', 'application', and 'description'
-            db = {row['fingerprint']: {'application': row['application'], 'description': row['description']}
+            # Keys are normalised the same way lookups are (see
+            # analyze_fingerprint), so a CSV written with upper case or
+            # padded hashes still matches.
+            db = {str(row['fingerprint']).strip().lower(): {'application': row['application'], 'description': row['description']}
                 for index, row in df.iterrows()}
             logging.info(f"Loaded JA3/JA3S database from {db_path}")
             return db
@@ -85,15 +87,16 @@ def analyze_fingerprint(fingerprint, database):
     Returns:
         dict: A dictionary containing the analysis results.  Returns None if not found.
     """
-    # Input validation: check if fingerprint is a valid MD5 hash
-    try:
-        if len(fingerprint) != 32:
-            raise ValueError("Invalid fingerprint length.  Must be 32 characters (MD5 hash).")
-        int(fingerprint, 16)  # Check if it's a valid hexadecimal string
-    except ValueError as e:
-        logging.error(f"Invalid fingerprint format: {e}")
-        print(f"Error: Invalid fingerprint format: {e}")
-        return None
+    # A JA3 hash is an MD5 hex digest. Hex digests compare case
+    # insensitively and databases publish them in lower case, while tools
+    # often print them in upper case, so the lookup key is normalised once
+    # here. A malformed fingerprint raises instead of returning None,
+    # because None also means "valid but unknown" and the two cases need
+    # different exit codes in main.
+    fingerprint = fingerprint.strip().lower()
+    if len(fingerprint) != 32:
+        raise ValueError("Invalid fingerprint length.  Must be 32 characters (MD5 hash).")
+    int(fingerprint, 16)  # Raises ValueError if it is not a hexadecimal string.
 
     # Perform the analysis
     if fingerprint in database:
@@ -118,9 +121,11 @@ def save_results_to_csv(results, output_file):
         df = pd.DataFrame([results])  # Convert dictionary to DataFrame
         df.to_csv(output_file, index=False)
         logging.info(f"Analysis results saved to {output_file}")
+        return True
     except Exception as e:
         logging.error(f"Error saving results to CSV: {e}")
         print(f"Error: Error saving results to CSV: {e}")
+        return False
 
 def main():
     """
@@ -136,7 +141,12 @@ def main():
     database = load_database(args.database)
 
     # Analyze the fingerprint
-    analysis_result = analyze_fingerprint(args.fingerprint, database)
+    try:
+        analysis_result = analyze_fingerprint(args.fingerprint, database)
+    except ValueError as e:
+        logging.error(f"Invalid fingerprint format: {e}")
+        print(f"Error: Invalid fingerprint format: {e}")
+        sys.exit(1)
 
     if analysis_result:
         print(f"Fingerprint: {args.fingerprint}")
@@ -150,7 +160,8 @@ def main():
                 'application': analysis_result['application'],
                 'description': analysis_result['description']
             }
-            save_results_to_csv(output_data, args.output)
+            if not save_results_to_csv(output_data, args.output):
+                sys.exit(1)
     else:
         print(f"Fingerprint {args.fingerprint} not found in database.")
 
