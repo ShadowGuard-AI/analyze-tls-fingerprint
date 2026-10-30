@@ -1,3 +1,5 @@
+![Banner](banner.png)
+
 # analyze-tls-fingerprint
 Analyzes the TLS fingerprint (JA3/JA3S) of network traffic or a server, comparing it to a database of known fingerprints to identify associated applications, malware families, or potential command-and-control servers. - Focused on Data analysis and reporting
 
