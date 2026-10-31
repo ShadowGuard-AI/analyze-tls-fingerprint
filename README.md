@@ -1,7 +1,7 @@
 ![Banner](banner.png)
 
 # analyze-tls-fingerprint
-Analyzes the TLS fingerprint (JA3/JA3S) of network traffic or a server, comparing it to a database of known fingerprints to identify associated applications, malware families, or potential command-and-control servers. - Focused on Data analysis and reporting
+Looks up one operator supplied JA3 or JA3S fingerprint hash against a small built in example table with three entries, or against an operator supplied CSV database, and reports the application and description recorded for that hash. The built in table is a small example (dummy) set, not a full fingerprint database. The tool takes a hash as its only input: it does not read network traffic, connect to a server, or capture TLS sessions. - Focused on Data analysis and reporting
 
 ## Install
 `git clone https://github.com/ShadowGuardAI/analyze-tls-fingerprint`
@@ -11,9 +11,9 @@ Analyzes the TLS fingerprint (JA3/JA3S) of network traffic or a server, comparin
 
 ## Parameters
 - `-h`: Show help message and exit
-- `-d`: No description provided
-- `-v`: No description provided
-- `-o`: No description provided
+- `-d`: Path to a CSV database file with fingerprint, application, and description columns. If omitted, the built in three entry example (dummy) table is used.
+- `-v`: Enable verbose logging (DEBUG level).
+- `-o`: Output file to save the lookup result (CSV format).
 
 ## License
 Copyright (c) ShadowGuardAI

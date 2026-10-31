@@ -21,9 +21,9 @@ def setup_argparse():
     Returns:
         argparse.ArgumentParser: The argument parser object.
     """
-    parser = argparse.ArgumentParser(description="Analyzes TLS fingerprints (JA3/JA3S).")
-    parser.add_argument("fingerprint", help="The JA3 or JA3S fingerprint to analyze.")
-    parser.add_argument("-d", "--database", help="Path to the JA3/JA3S database file (CSV).  Defaults to internal dummy db.", required=False) # Optional database path
+    parser = argparse.ArgumentParser(description="Looks up a JA3 or JA3S fingerprint hash in a built in three entry example table or an operator supplied CSV database.")
+    parser.add_argument("fingerprint", help="The JA3 or JA3S fingerprint hash to look up.")
+    parser.add_argument("-d", "--database", help="Path to the JA3/JA3S database file (CSV).  Defaults to the built in three entry example (dummy) table.", required=False) # Optional database path
     parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose logging (DEBUG level).")
     parser.add_argument("-o", "--output", help="Output file to save the analysis results (CSV format).", required=False)
 
