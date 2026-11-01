@@ -49,6 +49,10 @@ def load_database(db_path=None):
             # Keys are normalised the same way lookups are (see
             # analyze_fingerprint), so a CSV written with upper case or
             # padded hashes still matches.
+            # A fingerprint listed twice in the CSV keeps only its
+            # last row, silently. There is no warning because a dict
+            # comprehension has nowhere to put one; anyone curating a
+            # database file should know the earlier row is gone.
             db = {str(row['fingerprint']).strip().lower(): {'application': row['application'], 'description': row['description']}
                 for index, row in df.iterrows()}
             logging.info(f"Loaded JA3/JA3S database from {db_path}")
@@ -98,6 +102,10 @@ def analyze_fingerprint(fingerprint, database):
         raise ValueError("Invalid fingerprint length.  Must be 32 characters (MD5 hash).")
     int(fingerprint, 16)  # Raises ValueError if it is not a hexadecimal string.
 
+    # JA3 and JA3S share this one table and one lookup. Nothing asks
+    # whether the hash came from a client hello or a server hello, so
+    # an entry recorded for one kind answers for the other whenever
+    # the strings happen to collide in the same file.
     # Perform the analysis
     if fingerprint in database:
         analysis_result = database[fingerprint]
@@ -163,6 +171,10 @@ def main():
             if not save_results_to_csv(output_data, args.output):
                 sys.exit(1)
     else:
+        # Not found is a normal answer here, not a failure, so the
+        # exit code is 0. With the built in three entry table that is
+        # the answer nearly every real fingerprint gets, which is why
+        # the help text calls the table an example.
         print(f"Fingerprint {args.fingerprint} not found in database.")
 
 
