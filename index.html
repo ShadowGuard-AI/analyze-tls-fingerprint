@@ -3,95 +3,70 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>analyze-tls-fingerprint: The Driving Test Examiner's Clipboard</title>
-<meta name="description" content="Takes one operator supplied JA3 or JA3S fingerprint hash and looks it up, reporting the application and the description recorded for that hash. It does not read network traffic.">
+<title>analyze-tls-fingerprint: The Foundry Bench</title>
 <style>
-@font-face{font-family:'BIZ UDMincho';src:url('fonts/BIZ-UDMincho.ttf') format('truetype');}
-@font-face{font-family:'Archivo';src:url('fonts/Archivo.ttf') format('truetype');}
-:root{--blue:#24507e;--white:#f7f5ee;--rust:#b4552d;--steel:#969a9e;--ink:#1d2c3c;--asphalt:#3a3c3e}
-*{box-sizing:border-box}body{margin:0;background:var(--white);color:var(--ink);font-family:'Archivo',sans-serif;line-height:1.65}
-h1,h2,h3{font-family:'BIZ UDMincho',serif}
-.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;background:var(--white)}
-.hero img.heroimg{width:100%;height:60vh;object-fit:cover;display:block}
-.hero .in{padding:1rem 6vw 2rem;max-width:1080px;margin:0 auto;width:100%}
-.logo{width:180px;border-radius:6px}
-main{padding:0 6vw 3rem;max-width:1080px;margin:0 auto}
-nav{display:flex;gap:.9rem;flex-wrap:wrap;margin:1rem 0}
-.clipbtn{display:inline-block;text-decoration:none;color:var(--blue);font-family:'BIZ UDMincho',serif;padding:.9rem 1.2rem .6rem;background:var(--white);border:2px solid var(--blue);position:relative;transition:transform .12s,filter .15s}
-.clipbtn:before{content:'';position:absolute;top:-11px;left:50%;width:52px;height:16px;margin-left:-26px;background:linear-gradient(to bottom,var(--blue),#3a6a9c);border:2px solid #a8894a;border-radius:4px}
-.clipbtn:hover{filter:brightness(1.05)}
-.clipbtn:active{transform:translateY(4px)}
-.clipbtn:focus-visible{outline:3px solid var(--rust);outline-offset:3px}
-.sheet{background:var(--white);border:2px solid var(--blue);padding:0 1.5rem 1.3rem;margin:1.8rem 0;position:relative;background-image:repeating-linear-gradient(to bottom,transparent 0 30px,rgba(36,80,126,.18) 30px 31px)}
-.sheet:before{content:'';position:absolute;top:-13px;left:50%;width:64px;height:20px;margin-left:-32px;background:var(--steel);border:2px solid #6e7276;border-radius:5px}
-.sheet h2{color:var(--blue);border-bottom:3px solid var(--blue);padding-bottom:.35rem}
-.rownum{display:inline-block;background:var(--blue);color:var(--white);font-family:'BIZ UDMincho',serif;padding:.05rem .6rem;margin-right:.6rem}
-pre{background:#eef2f5;color:var(--ink);padding:1rem;overflow-x:auto;border-left:5px solid var(--blue)}
-a{color:#7c3a1c}a:before{content:'';display:inline-block;width:13px;height:13px;margin-right:.5em;vertical-align:-2px;border:2px solid var(--ink)}
-a:hover:before{background:linear-gradient(to bottom right,transparent 42%,var(--rust) 44%,var(--rust) 58%,transparent 60%),linear-gradient(to top right,transparent 42%,var(--rust) 44%,var(--rust) 58%,transparent 60%)}
-.clipbtn:before{width:52px}
-.giveway{height:30px;margin:2.2rem 0;background:var(--asphalt);position:relative}
-.giveway:before{content:'';position:absolute;left:8%;right:8%;top:12px;border-top:6px dashed var(--white)}
-.giveway:after{content:'';position:absolute;left:50%;top:6px;width:16px;height:16px;margin-left:-8px;background:linear-gradient(to bottom right,transparent 42%,var(--rust) 44%,var(--rust) 58%,transparent 60%),linear-gradient(to top right,transparent 42%,var(--rust) 44%,var(--rust) 58%,transparent 60%)}
-.stop{display:flex;gap:1rem;padding:.5rem 0;border-bottom:1px solid rgba(36,80,126,.25)}
-.stop b{font-family:'BIZ UDMincho',serif;min-width:50px;color:var(--blue)}
-table{border-collapse:collapse;width:100%;background:#fff}
-th,td{border:1px solid var(--blue);padding:.5rem .8rem;text-align:left}
-th{font-family:'BIZ UDMincho',serif;color:var(--blue)}
-.margin{background:#fff;border-left:6px solid var(--rust);padding:.2rem 1.3rem 1rem;margin:1.4rem 0}
-.margin h3{font-family:'BIZ UDMincho',serif;color:var(--blue)}
-footer{padding:1rem 6vw 2.4rem;max-width:1080px;margin:0 auto}
+@font-face { font-family: 'Cactus Classical Serif'; src: url('fonts/CactusClassicalSerif-400.woff2') format('woff2'); font-weight: 400; }
+@font-face { font-family: 'Mulish'; src: url('fonts/Mulish-400.woff2') format('woff2'); font-weight: 400; }
+@font-face { font-family: 'Mulish'; src: url('fonts/Mulish-700.woff2') format('woff2'); font-weight: 700; }
+:root { --bronze: #8a6b32; --iron: #26221d; --oak: #6e5136; --felt: #c22f24; --paper: #f5f1e8; --ink: #2a251c; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: 'Mulish', sans-serif; background: var(--paper); color: var(--ink); line-height: 1.6; }
+header.top { display: flex; justify-content: space-between; align-items: center; padding: 16px 28px; background: var(--iron); color: #e9e2d0; border-bottom: 5px solid var(--bronze); }
+.wordmark { font-weight: 700; letter-spacing: .03em; }
+.flake { color: #e89a90; font-size: .85rem; letter-spacing: .12em; text-transform: uppercase; }
+.hero { text-align: center; padding: 50px 22px 8px; }
+.hero img.logo { width: 300px; max-width: 80%; height: auto; border: 5px solid var(--iron); }
+h1 { font-family: 'Cactus Classical Serif', serif; font-weight: 400; font-size: 2.6rem; margin: 18px 0 6px; color: var(--iron); }
+h2 { font-family: 'Cactus Classical Serif', serif; font-weight: 400; font-size: 1.7rem; color: var(--iron); border-bottom: 3px solid #ddd2b8; padding-bottom: 5px; margin-top: 38px; }
+.tag { max-width: 43rem; margin: 0 auto; }
+.buttons { margin: 22px 0 6px; }
+.buttons a { display: inline-block; margin: 4px; padding: 11px 22px; background: var(--bronze); color: #fff; font-weight: 700; text-decoration: none; border-radius: 4px; }
+.buttons a.alt { background: transparent; color: var(--iron); border: 2px solid var(--iron); }
+figure.wide { max-width: 1020px; margin: 24px auto; padding: 0 18px; }
+figure.wide img { width: 100%; height: auto; display: block; border: 1px solid #ddd2b8; }
+figcaption { color: #756c58; font-size: .9rem; padding-top: 8px; text-align: center; }
+.strip { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; padding: 20px 18px; }
+.strip div { background: #fff; border: 1px solid #ddd2b8; border-top: 4px solid var(--felt); padding: 13px 18px; min-width: 180px; text-align: center; }
+.strip b { display: block; font-family: 'Cactus Classical Serif', serif; font-weight: 400; color: var(--iron); font-size: 1.1rem; }
+main { max-width: 880px; margin: 0 auto; padding: 8px 22px 30px; }
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid #ddd2b8; padding: 8px 12px; text-align: left; vertical-align: top; }
+th { background: var(--iron); color: #e9e2d0; }
+code { background: #eae2cc; padding: 1px 6px; border-radius: 3px; }
+.hold { border-left: 5px solid var(--felt); background: #f6e9e2; padding: 13px 18px; }
+footer { text-align: center; padding: 24px 18px 32px; color: #756c58; font-size: .9rem; border-top: 5px solid var(--bronze); margin-top: 28px; }
 </style>
 </head>
 <body>
-<header class="hero">
-<img class="heroimg" src="assets/intro-banner.png" alt="The examiner's waiting area before the first candidate: empty chairs, a blank clipboard, a wet road beyond the window, no text">
-<div class="in">
-<img class="logo" src="assets/logo.png" alt="An examiner's clipboard in coastal line blue with a rust flecked steel clip and one waiting row of three empty boxes">
-<h1>analyze-tls-fingerprint</h1>
-<p>An examiner's mark sheet laid out for one sitting. Each topic is entered as a numbered row and ticked off in order.</p>
-<nav>
-<a class="clipbtn" href="#row1">Row one</a>
-<a class="clipbtn" href="#row2">Honest limits</a>
-<a class="clipbtn" href="#row3">Two sources</a>
-<a class="clipbtn" href="#row4">Running it</a>
-<a class="clipbtn" href="#row5">Licence</a>
-</nav>
+<header class="top"><span class="wordmark">analyze-tls-fingerprint</span><span class="flake">One hash, matched by ear</span></header>
+<section class="hero">
+<img class="logo" src="assets/logo.png" alt="One bronze bell straight on resting on an oak bench, a red felt striker leaning against its rim and the dark foundry wall plain behind it">
+<h1>The Foundry Bench</h1>
+<p class="tag">Looks up one operator supplied JA3 or JA3S fingerprint hash and reports the application and description recorded for it. One bell is struck and matched against exactly three reference bells whose notes are known, or against a larger set the operator brings to the bench.</p>
+<p class="buttons"><a href="https://github.com/ShadowGuard-AI/analyze-tls-fingerprint">View on GitHub</a> <a class="alt" href="https://github.com/ShadowGuard-AI/analyze-tls-fingerprint#readme">Read the README</a></p>
+</section>
+<figure class="wide"><img src="assets/intro-banner.png" alt="The red felt striker close up at the large bell's rim on the foundry bench, the three small reference bells waiting in a row behind it"><figcaption>The striker at the rim: one presented bell, three references waiting behind.</figcaption></figure>
+<div class="strip">
+<div><b>One hash</b>the only input</div>
+<div><b>Three entries</b>in the built in table</div>
+<div><b>-d</b>an operator supplied CSV database</div>
+<div><b>pandas</b>the one requirement</div>
 </div>
-</header>
 <main>
-<section class="sheet" id="row1"><h2><span class="rownum">1</span>The single task</h2>
-<p>analyze-tls-fingerprint takes one operator supplied JA3 or JA3S fingerprint hash and looks it up, reporting the application and the description recorded for that hash. It is focused on data analysis and reporting.</p>
-</section>
-<div class="giveway"></div>
-<section class="sheet" id="row2"><h2><span class="rownum">2</span>The honest limits</h2>
-<p>Entered in the same size of type as the task, because an examiner's sheet hides nothing: the tool takes a hash as its only input, and it does not read network traffic, does not connect to a server, and does not capture TLS sessions. Anyone arriving here expecting a live traffic tool is told so at the second row, not at the last.</p>
-<div class="margin"><h3>Examiner's marginal note</h3><p>This tool never touches live traffic. It takes one presented hash, checks it against a recorded standard, and writes down a name and a short account.</p></div>
-</section>
-<div class="giveway"></div>
-<section class="sheet" id="row3"><h2><span class="rownum">3</span>The two sources the lookup can consult</h2>
-<p>The first is the built in example table, described exactly as the source describes it: a small set of three entries, an example or dummy set, not a full fingerprint database.</p>
-<div class="margin"><h3>Examiner's marginal note</h3><p>The built in table holds only three dummy entries. A match outside that small set needs the operator supplied CSV below.</p></div>
-<p>The second is an operator supplied CSV database whose columns are fingerprint, application, and description. The form below shows the column names as a headed but empty form, since the source gives the column names and no sample rows of an operator database, and this page invents none. The source also shows no worked lookup anywhere, so no example hash, matched application, or output CSV row appears here.</p>
-<table><tr><th>fingerprint</th><th>application</th><th>description</th></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></table>
-</section>
-<div class="giveway"></div>
-<section class="sheet" id="row4"><h2><span class="rownum">4</span>Getting and running the tool</h2>
-<pre>git clone https://github.com/ShadowGuardAI/analyze-tls-fingerprint</pre>
-<pre>./analyze-tls-fingerprint [params]</pre>
-<p>The four controls, entered as a candidate's manoeuvres, each with its mark:</p>
-<div class="stop"><b>-h</b><span>Shows a help message and exits.</span></div>
-<div class="stop"><b>-d</b><span>Gives the path to a CSV database file with fingerprint, application, and description columns. If it is omitted, the built in three entry example table is used instead.</span></div>
-<div class="stop"><b>-v</b><span>Turns on verbose logging at DEBUG level.</span></div>
-<div class="stop"><b>-o</b><span>Names an output file to save the lookup result in CSV format.</span></div>
-</section>
-<div class="giveway"></div>
-<section class="sheet" id="row5"><h2><span class="rownum">5</span>The licence</h2>
-<p>The last row on the sheet, as its source gives it. It is a copyright line only, with no licence named, reproduced as written:</p>
-<pre>Copyright (c) ShadowGuardAI</pre>
-<p><a href="https://github.com/ShadowGuard-AI/analyze-tls-fingerprint">The repository on GitHub</a></p>
-</section>
+<h2>What it does</h2>
+<p>The lookup runs against a small built in example table with three entries, or against an operator supplied CSV database given with <code>-d</code>, whose columns are fingerprint, application, and description. Usage, as the README gives it: <code>./analyze-tls-fingerprint [params]</code>. Its one requirement is <code>pandas</code>.</p>
+<figure class="wide" style="padding:0;margin:18px 0;"><img src="assets/banner.png" alt="Foundry bench with three small reference bells standing in an even row and one larger bell set apart at the end of the bench, the red felt striker resting across the large bell's rim and moulds and iron tools in soft shadow behind"></figure>
+<h2>Parameters</h2>
+<table>
+<tr><th>Parameter</th><th>What the README says</th></tr>
+<tr><td><code>-h</code></td><td>Show help message and exit</td></tr>
+<tr><td><code>-d</code></td><td>Path to a CSV database file with fingerprint, application, and description columns. If omitted, the built in three entry example (dummy) table is used</td></tr>
+<tr><td><code>-v</code></td><td>Enable verbose logging (DEBUG level)</td></tr>
+<tr><td><code>-o</code></td><td>Output file to save the lookup result (CSV format)</td></tr>
+</table>
+<h2>Stated limits</h2>
+<div class="hold"><p>The built in table is a small example (dummy) set, not a full fingerprint database. The tool takes a hash as its only input: it does not read network traffic, connect to a server, or capture TLS sessions. Licence: the README closes with a copyright line and names no licence.</p></div>
 </main>
-<footer><p>Theme: the driving test examiner's clipboard. Type: BIZ UDMincho for headings, Archivo for reading, both SIL Open Font License 1.1. No lettering reference was recorded for this project.</p></footer>
+<footer>analyze-tls-fingerprint, struck and matched. Fonts: Cactus Classical Serif and Mulish, self-hosted under the SIL Open Font License.</footer>
 </body>
 </html>
