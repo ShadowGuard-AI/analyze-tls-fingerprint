@@ -1,10 +1,10 @@
-![The examiner's waiting area before the first candidate: empty chairs, a blank clipboard, a wet road beyond the window, nothing readable](intro-banner.png)
+![The red felt striker close up at the large bell's rim on the foundry bench, the three small reference bells waiting in a row behind it](intro-banner.png)
 
 # analyze-tls-fingerprint
 
-![The waiting area with the name printed on the blue board above the hooks and a waiting car at the kerb beyond the window](banner.png)
+![Foundry bench with three small reference bells standing in an even row and one larger bell set apart at the end of the bench, the red felt striker resting across the large bell's rim and moulds and iron tools in soft shadow behind](banner.png)
 
-![An examiner's clipboard in coastal line blue with a rust flecked steel clip and one waiting row of three empty boxes](logo.png)
+![One bronze bell straight on resting on an oak bench, a red felt striker leaning against its rim and the dark foundry wall plain behind it](logo.png)
 
 ![The examiner's room in three planes: the wet road beyond the window, a highlight travelling down the clipboard row, hooks and spare sheets stirring near](scene.svg)
 
